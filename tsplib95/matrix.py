@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 from . import utils
+from abc import ABC, abstractmethod
 
 
-class Matrix:
+class Matrix(ABC):
     """A square matrix created from a list of numbers.
 
     Elements are accessible using matrix notation. Negative indexing is not
@@ -45,6 +46,7 @@ class Matrix:
         """
         return 0 <= i < self.size and 0 <= j < self.size
 
+    @abstractmethod
     def get_index(self, i, j):
         """Return the linear index for the element at (i,j).
 
