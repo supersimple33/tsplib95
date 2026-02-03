@@ -16,6 +16,7 @@ requirements = [
     'Deprecated~=1.2.9',
     'networkx~=2.1',
     'tabulate~=0.8.7',
+    'numpy>=1.18.0'
 ]
 
 setup_requirements = ['pytest-runner', ]
