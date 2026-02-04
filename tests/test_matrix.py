@@ -2,6 +2,7 @@
 import pytest
 
 from tsplib95 import matrix
+import numpy as np
 
 
 def test_base_matrix_requires_get_index_implmentation():
@@ -39,6 +40,12 @@ def test_full_matrix(i, j, v):
     assert m[i, j] == v
 
 
+def test_full_matrix_to_numpy():
+    m = matrix.FullMatrix(range(1, 10), 3)
+    np_array = m.to_numpy()
+    assert np.all(np_array == np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]]))
+
+
 # 1 2 3
 #   4 5
 #     6
@@ -55,6 +62,12 @@ def test_upper_diag_row(i, j, v):
     assert m[i, j] == v
 
 
+def test_upper_diag_row_to_numpy():
+    m = matrix.UpperDiagRow(range(1, 7), 3)
+    np_array = m.to_numpy()
+    assert np.all(np_array == np.array([[1, 2, 3], [2, 4, 5], [3, 5, 6]]))
+
+
 # 1
 # 2 3
 # 4 5 6
@@ -69,6 +82,12 @@ def test_upper_diag_row(i, j, v):
 def test_lower_diag_row(i, j, v):
     m = matrix.LowerDiagRow(range(1, 7), 3)
     assert m[i, j] == v
+
+
+def test_lower_diag_row_to_numpy():
+    m = matrix.LowerDiagRow(range(1, 7), 3)
+    np_array = m.to_numpy()
+    assert np.all(np_array == np.array([[1, 2, 4], [2, 3, 5], [4, 5, 6]]))
 
 
 # _ 1 2 3
@@ -90,6 +109,14 @@ def test_upper_row(i, j, v):
     assert m[i, j] == v
 
 
+def test_upper_row_to_numpy():
+    m = matrix.UpperRow(range(1, 7), 4)
+    np_array = m.to_numpy()
+    assert np.all(
+        np_array == np.array([[0, 1, 2, 3], [1, 0, 4, 5], [2, 4, 0, 6], [3, 5, 6, 0]])
+    )
+
+
 # _
 # 1 _
 # 2 3 _
@@ -107,6 +134,14 @@ def test_upper_row(i, j, v):
 def test_lower_row(i, j, v):
     m = matrix.LowerRow(range(1, 7), 4)
     assert m[i, j] == v
+
+
+def test_lower_row_to_numpy():
+    m = matrix.LowerRow(range(1, 7), 4)
+    np_array = m.to_numpy()
+    assert np.all(
+        np_array == np.array([[0, 1, 2, 4], [1, 0, 3, 5], [2, 3, 0, 6], [4, 5, 6, 0]])
+    )
 
 
 # _ 1 2 4
@@ -128,6 +163,14 @@ def test_upper_col(i, j, v):
     assert m[i, j] == v
 
 
+def test_upper_col_to_numpy():
+    m = matrix.UpperCol(range(1, 7), 4)
+    np_array = m.to_numpy()
+    assert np.all(
+        np_array == np.array([[0, 1, 2, 4], [1, 0, 3, 5], [2, 3, 0, 6], [4, 5, 6, 0]])
+    )
+
+
 # _
 # 1 _
 # 2 4 _
@@ -147,6 +190,14 @@ def test_lower_col(i, j, v):
     assert m[i, j] == v
 
 
+def test_lower_col_to_numpy():
+    m = matrix.LowerCol(range(1, 7), 4)
+    np_array = m.to_numpy()
+    assert np.all(
+        np_array == np.array([[0, 1, 2, 3], [1, 0, 4, 5], [2, 4, 0, 6], [3, 5, 6, 0]])
+    )
+
+
 # 1 2 4
 #   3 5
 #     6
@@ -163,6 +214,12 @@ def test_upper_diag_col(i, j, v):
     assert m[i, j] == v
 
 
+def test_upper_diag_col_to_numpy():
+    m = matrix.UpperDiagCol(range(1, 7), 3)
+    np_array = m.to_numpy()
+    assert np.all(np_array == np.array([[1, 2, 4], [2, 3, 5], [4, 5, 6]]))
+
+
 # 1
 # 2 4
 # 3 5 6
@@ -177,3 +234,9 @@ def test_upper_diag_col(i, j, v):
 def test_lower_diag_col(i, j, v):
     m = matrix.LowerDiagCol(range(1, 7), 3)
     assert m[i, j] == v
+
+
+def test_lower_diag_col_to_numpy():
+    m = matrix.LowerDiagCol(range(1, 7), 3)
+    np_array = m.to_numpy()
+    assert np.all(np_array == np.array([[1, 2, 3], [2, 4, 5], [3, 5, 6]]))
