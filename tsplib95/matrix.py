@@ -63,6 +63,9 @@ class Matrix(ABC):
         """Returns a 2D NumPy array containing the elements of the matrix."""
         raise NotImplementedError()
 
+    def __array__(self, dtype=np.float64):
+        return self.to_numpy(dtype=dtype)
+
 
 class FullMatrix(Matrix):
     """A complete square matrix.
