@@ -5,9 +5,8 @@ from tsplib95 import matrix
 
 
 def test_base_matrix_requires_get_index_implmentation():
-    m = matrix.Matrix(range(1, 10), 3)
-    with pytest.raises(NotImplementedError):
-        m.get_index(0, 0)
+    with pytest.raises(TypeError):
+        m = matrix.Matrix(range(1, 10), 3)
 
 
 @pytest.mark.parametrize('i,j', [
