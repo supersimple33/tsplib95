@@ -32,7 +32,7 @@ class Matrix(ABC):
         i -= self.min_index
         j -= self.min_index
         if not self.is_valid_row_column(i, j):
-            raise IndexError(f'({i}, {j}) is out of bonuds')
+            raise IndexError(f"({i}, {j}) is out of bounds")
         index = self.get_index(i, j)
         return self.numbers[index]
 
@@ -86,6 +86,10 @@ class HalfMatrix(Matrix):
             return 0
         i, j = self._fix_indices(i, j)
         return super().value_at(i, j)
+
+    @abstractmethod
+    def _fix_indices(self, i, j):
+        raise NotImplementedError()
 
 
 class UpperDiagRow(HalfMatrix):
