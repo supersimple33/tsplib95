@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from . import utils
 from abc import ABC, abstractmethod
+import numpy as np
 
 
 class Matrix(ABC):
@@ -57,6 +58,11 @@ class Matrix(ABC):
         """
         raise NotImplementedError()
 
+    @abstractmethod
+    def to_numpy(self, dtype=np.float64):
+        """Returns a 2D NumPy array containing the elements of the matrix."""
+        raise NotImplementedError()
+
 
 class FullMatrix(Matrix):
     """A complete square matrix.
@@ -68,6 +74,10 @@ class FullMatrix(Matrix):
 
     def get_index(self, i, j):
         return i * self.size + j
+
+    def to_numpy(self, dtype=np.float64):
+        data = np.asarray(self.numbers, dtype=dtype)
+        return data.reshape((self.size, self.size))
 
 
 class HalfMatrix(Matrix):
@@ -112,6 +122,25 @@ class UpperDiagRow(HalfMatrix):
         n = self.size - int(not self.has_diagonal)
         return utils.integer_sum(n, n - i) + (j - i)
 
+    def to_numpy(self, dtype=np.float64):
+        n = self.size
+        data = np.asarray(self.numbers, dtype=dtype)
+
+        k = 0 if self.has_diagonal else 1
+        iu, ju = np.triu_indices(n, k=k)
+
+        offset = iu * (n - k) - (iu * (iu - 1)) // 2
+        within = (ju - iu) - k
+        lin = offset + within
+
+        out = np.empty((n, n), dtype=dtype)
+        if not self.has_diagonal:
+            np.fill_diagonal(out, 0)
+
+        out[iu, ju] = data[lin]
+        out[ju, iu] = out[iu, ju]  # mirror
+        return out
+
 
 class LowerDiagRow(HalfMatrix):
     """Lower-triangular matrix that includes the diagonal.
@@ -131,6 +160,26 @@ class LowerDiagRow(HalfMatrix):
 
     def get_index(self, i, j):
         return utils.integer_sum(i) + j
+
+    def to_numpy(self, dtype=np.float64):
+        n = self.size
+        data = np.asarray(self.numbers, dtype=dtype)
+
+        k = 0 if self.has_diagonal else 1
+        il, jl = np.tril_indices(n, k=k)
+
+        out = np.empty((n, n), dtype=dtype)
+        if self.has_diagonal:
+            offset = il * (il + 1) // 2
+            lin = offset + jl
+        else:
+            offset = il * (il - 1) // 2
+            lin = offset + jl - 1
+            np.fill_diagonal(out, 0)
+
+        out[il, jl] = data[lin]
+        out[jl, il] = out[il, jl]  # mirror
+        return out
 
 
 class UpperRow(UpperDiagRow):
@@ -172,13 +221,13 @@ class LowerDiagCol(UpperDiagRow):
 
 
 TYPES = {
-    'FULL_MATRIX': FullMatrix,
-    'UPPER_DIAG_ROW': UpperDiagRow,
-    'UPPER_ROW': UpperRow,
-    'LOWER_DIAG_ROW': LowerDiagRow,
-    'LOWER_ROW': LowerRow,
-    'UPPER_DIAG_COL': UpperDiagCol,
-    'UPPER_COL': UpperCol,
-    'LOWER_DIAG_COL': LowerDiagCol,
-    'LOWER_COL': LowerCol,
+    "FULL_MATRIX": FullMatrix,
+    "UPPER_DIAG_ROW": UpperDiagRow,
+    "UPPER_ROW": UpperRow,
+    "LOWER_DIAG_ROW": LowerDiagRow,
+    "LOWER_ROW": LowerRow,
+    "UPPER_DIAG_COL": UpperDiagCol,
+    "UPPER_COL": UpperCol,
+    "LOWER_DIAG_COL": LowerDiagCol,
+    "LOWER_COL": LowerCol,
 }
