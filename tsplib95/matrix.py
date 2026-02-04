@@ -168,7 +168,7 @@ class LowerDiagRow(HalfMatrix):
         n = self.size
         data = np.asarray(self.numbers, dtype=dtype)
 
-        k = 0 if self.has_diagonal else 1
+        k = 0 if self.has_diagonal else -1
         il, jl = np.tril_indices(n, k=k)
 
         out = np.empty((n, n), dtype=dtype)
@@ -177,7 +177,7 @@ class LowerDiagRow(HalfMatrix):
             lin = offset + jl
         else:
             offset = il * (il - 1) // 2
-            lin = offset + jl - 1
+            lin = offset + jl
             np.fill_diagonal(out, 0)
 
         out[il, jl] = data[lin]
